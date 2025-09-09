@@ -1,0 +1,65 @@
+import { StyleSheet } from 'react-native'; 
+
+export const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1c1b1f', 
+  },
+  top: {
+    backgroundColor: '#bfa04f', 
+    paddingBottom: 25,
+    paddingTop: 50,
+    borderBottomWidth: 2,
+    borderBottomColor: '#1c1b1f',
+  },
+  boasVindas: {
+    fontSize: 32,
+    alignSelf: 'center',
+    marginTop: 10,
+    fontFamily: 'BebasNeue_400Regular',
+    color: '#f6e27f', 
+    letterSpacing: 2,
+  },
+  text: {
+    fontSize: 20,
+    alignSelf: 'center',
+    marginTop: 80,
+    marginBottom: 60,
+    fontFamily: 'BebasNeue_400Regular',
+    color: '#e0d9c0', 
+  },
+  button: {   
+    backgroundColor: '#d4af37', 
+    padding: 12,
+    borderRadius: 8,
+    margin: 20,
+    shadowColor: '#d4af37',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonText: {
+    color: '#1c1b1f', 
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  buttonExit: {
+    marginTop: 290,
+    backgroundColor: '#a67c00', 
+    padding: 12,
+    borderRadius: 8,
+    margin: 20,
+    shadowColor: '#a67c00',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonTextExit: {
+    color: '#1c1b1f', 
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+});
