@@ -1,104 +1,77 @@
-import React from "react"; 
-import { View, 
-         Text, 
-         TouchableOpacity,
-        } 
-from "react-native";
-import { style } from "./style";
-import { useNavigation, NavigationProp } from "@react-navigation/native"; 
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../src/types/navigation';
+import { useUser } from '../src/UserContext'; 
 
+type Props = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
 
-type RootStackParamList = {
-  Login: undefined;
-  AdminScreen: undefined;
-  HomeScreen: undefined;
-  TeacherScreen: undefined;
-  Tarefas: undefined;
-  Horarios: undefined;
-  Chat: undefined;
-  Financeiro: undefined;
-};
-
-
-export default function HomeScreen() {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-    const handleChat = () => {
- 
-      navigation.navigate("Chat")
-      console.log("Navegando para Chat com o Professor");
-}
+export default function HomeScreen({ navigation}: Props) {
+  const { user } = useUser();
+  const userRole = user?.role;
   
-    const handleExit = () => {
-      navigation.navigate("Login"); 
-      console.log("Saindo do aplicativo");
-  }
-
-  const handleHomework = () => {
-
-    navigation.navigate("Tarefas"); 
-    console.log("indo ao painel de tarefas");
-}
-
-const handleHorarios = () => {
-
-  navigation.navigate("Horarios")
-  console.log("Navegando para Horários");
-}
-const handleFinanceiro = () => {
-
-  navigation.navigate("Financeiro")
-  console.log("Navegando para Financeiro");
-};
-
+  const handleNavigate = (screen: keyof RootStackParamList) => {
+    navigation.navigate(screen as any);
+  };
 
   return (
-    <View style={style.container}>
+    <View style={styles.container}>
+      <Text style={styles.title}>MakerMusic</Text>
 
-    <View style={style.top}>
-      <Text style={style.boasVindas} >MakerMusic</Text>
+      {userRole === 'Admin' && (
+        <>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('EntitiesScreen')}>
+            <Text style={styles.buttonText}>Gerenciar Usuários</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('ScheduleScreen')}>
+            <Text style={styles.buttonText}>Gerenciar Horários</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('FinanceScreen')}>
+            <Text style={styles.buttonText}>Controle de Pagamentos</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {userRole === 'Professor' && (
+        <>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('ScheduleScreen')}>
+            <Text style={styles.buttonText}>Horários e Sala</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('AttendanceScreen')}>
+            <Text style={styles.buttonText}>Anotar Presença</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TasksScreen')}>
+            <Text style={styles.buttonText}>Tarefas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('StudentsScreen')}>
+            <Text style={styles.buttonText}>Estudantes</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {userRole === 'Aluno' && (
+        <>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('ScheduleScreen')}>
+            <Text style={styles.buttonText}>Horários</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('ChatScreen')}>
+            <Text style={styles.buttonText}>Chat com o Professor</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('FinanceScreen')}>
+            <Text style={styles.buttonText}>Financeiro</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TasksScreen')}>
+            <Text style={styles.buttonText}>Tarefas</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
-
-    <View>
-        <Text style={style.text}>Escolha uma opção no menu abaixo.</Text>
-
-          <TouchableOpacity style={style.button} onPress={handleHomework}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Tarefas
-                  </Text>
-                </TouchableOpacity>
-
-          <TouchableOpacity style={style.button} onPress={handleChat}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Chat com o Professor
-                  </Text>
-                </TouchableOpacity>
-
-
-          <TouchableOpacity style={style.button} onPress={handleFinanceiro}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Financeiro
-                  </Text>
-                </TouchableOpacity>
-
-             <TouchableOpacity style={style.button} onPress={handleHorarios}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Horarios
-                  </Text>
-                </TouchableOpacity>
-
-
-    </View>
-
-    <View>
-        <TouchableOpacity style={style.buttonExit} onPress={handleExit}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Sair
-                  </Text>
-                </TouchableOpacity>
-    </View>
-
-    </View>
-    
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1c1b1f', padding: 20 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#f6e27f', marginBottom: 30 },
+  button: { backgroundColor: '#d4af37', paddingVertical: 15, paddingHorizontal: 30, borderRadius: 10, marginVertical: 10, width: '100%', alignItems: 'center' },
+  buttonText: { color: '#1c1b1f', fontSize: 18, fontWeight: 'bold' },
+});

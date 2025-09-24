@@ -1,88 +1,61 @@
-import React from "react"; 
-import { View, 
-         Text, 
-         TouchableOpacity,
-        } 
-from "react-native";
-import { style } from "./style";
-import { useNavigation, NavigationProp } from "@react-navigation/native"; 
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { useUser } from "../src/UserContext";
+import { RootStackParamList } from "../src/types/navigation";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type RootStackParamList = {
-  Login: undefined;
-  AdminScreen: undefined;
-  HomeScreen: undefined;
-  TeacherScreen: undefined;
-  Tarefas: undefined;
-  Horarios: undefined;
-  Chat: undefined;
-};
+export default function ProfessorHomeScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { user, logout } = useUser();
 
-
-const handleTeacherHorarios = () => {
- //acrescentar a lógica para navegar para a tela de Horários
-  console.log("Navegando para Horários");
-}
-
-export default function HomeScreen() {
-
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const handleExit = () => {
-    navigation.navigate("Login"); 
-    console.log("Saindo do aplicativo");
-  }
-
-  const handleAddHomework = () => {
-    navigation.navigate("Tarefas")
-  }
-
-  const handleResponseChat = () => {
-    navigation.navigate("Chat")
-  }
-
-   const handleTeacherHorarios = () => {
-    navigation.navigate("Horarios")
+  // Apenas professores têm acesso a essa tela.
+  if (user?.role !== "Professor") {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Acesso Negado</Text>
+        <Text style={styles.subtitle}>Você não tem permissão para visualizar esta tela.</Text>
+      </View>
+    );
   }
 
   return (
-    
+    <View style={styles.container}>
+      <Text style={styles.title}>MakerMusic - Professor</Text>
 
-    <View style={style.container}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("TasksScreen")}
+      >
+        <Text style={styles.buttonText}>Gerenciar Tarefas</Text>
+      </TouchableOpacity>
 
-    <View style={style.top}>
-      <Text style={style.boasVindas} >MakerMusic</Text>
-    </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("TeacherScreen")}
+      >
+        <Text style={styles.buttonText}>Marcar Presença</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("AddScheduleScreen")}
+      >
+        <Text style={styles.buttonText}>Horários</Text>
+      </TouchableOpacity>
 
-    <View>
-        <Text style={style.text}>Escolha uma opção no menu abaixo.</Text>
-
-          <TouchableOpacity style={style.button} onPress={handleAddHomework}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Atribuir Atividades
-                  </Text>
-                </TouchableOpacity>
-
-          <TouchableOpacity style={style.button} onPress={handleResponseChat}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Chat
-                  </Text>
-                </TouchableOpacity>
-
-             <TouchableOpacity style={style.button} onPress={handleTeacherHorarios}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Horarios
-                  </Text>
-                </TouchableOpacity>
-    </View>
-
-    <View>
-        <TouchableOpacity style={style.buttonExit} onPress={handleExit}>
-                  <Text style={[style.buttonText, { fontFamily: "BebasNeue_400Regular" }]}>
-                    Sair
-                  </Text>
-                </TouchableOpacity>
-    </View>
-
+      <TouchableOpacity style={styles.buttonExit} onPress={() => { logout(); navigation.replace("LoginScreen"); }}>
+        <Text style={styles.buttonText}>Sair</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#1c1b1f", padding: 20, alignItems: "center" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#f6e27f", marginBottom: 30, marginTop: 50 },
+  subtitle: { fontSize: 18, color: "#fff", textAlign: 'center', marginBottom: 30 },
+  button: { backgroundColor: "#d4af37", padding: 15, borderRadius: 10, width: "80%", alignItems: "center", marginVertical: 8 },
+  buttonExit: { backgroundColor: "#e74c3c", padding: 15, borderRadius: 10, width: "80%", alignItems: "center", marginTop: 20 },
+  buttonText: { color: "#1c1b1f", fontWeight: "bold", fontSize: 16 },
+});
